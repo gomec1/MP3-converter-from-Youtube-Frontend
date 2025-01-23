@@ -30,31 +30,21 @@
             const serverStatus = document.getElementById('server-status');
 
             try {
-                const response = await fetch('https://mp3-converter-from-youtube.onrender.com', {
+                const response = await fetch('https://mp3-converter-from-youtube.onrender.com/api/download', {
                     method: 'OPTIONS',
                 });
 
                 if (response.ok) {
                     serverStatus.textContent = 'Aktiv';
                     serverStatus.style.color = 'green';
-                    try {
-                        
-                    if(response.status == 204) {
-                        console.log('Der Server ist aktiv');
-                    }} catch (error) {
-                        console.log(response.status);
-                    }
-                }
-                else {
+                } else {
                     serverStatus.textContent = 'Nicht verfügbar';
                     serverStatus.style.color = 'red';
-                    console.log(response.status);
-                    
                 }
             } catch (error) {
                 serverStatus.textContent = 'Nicht verfügbar';
                 serverStatus.style.color = 'red';
-                console.log(response.status);
+                console.error('Fehler:', error.message);
             }
         });
 
@@ -73,17 +63,18 @@
             statusMessage.className = 'info';
 
             try {
-                const response = await fetch('https://mp3-converter-from-youtube.onrender.com', {
+                const response = await fetch('https://mp3-converter-from-youtube.onrender.com/api/download', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ url }),
-});
+                });
+
                 if (!response.ok) {
                     throw new Error('Fehler beim Herunterladen.');
                 }
 
                 const data = await response.json();
-                statusMessage.innerHTML = `Download bereit: <a href="${data.downloadUrl}" download>Klicken Sie hier, um die Datei herunterzuladen</a>`;
+                statusMessage.innerHTML = `Download bereit: <a href="${data.downloadUrl}" target="_blank" download>Klicken Sie hier, um die Datei herunterzuladen</a>`;
                 statusMessage.className = 'success';
             } catch (error) {
                 statusMessage.textContent = 'Fehler: ' + error.message;
